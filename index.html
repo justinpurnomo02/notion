@@ -34,23 +34,18 @@
             const pokemonName = document.getElementById('pokemonName').value.toLowerCase();
             const spriteContainer = document.getElementById('spriteContainer');
 
-            // Clear previous sprite
             spriteContainer.innerHTML = '';
 
-            // Construct the sprite URL
-            const spriteUrl = `https://img.pokemondb.net/sprites/home/normal/${pokemonName}.png`;
+            const spriteUrl = `https://img.pokemondb.net/sprites/black-white/normal/${pokemonName}.png`;
 
-            // Create an image element and set its source to the sprite URL
             const img = document.createElement('img');
             img.src = spriteUrl;
             img.alt = pokemonName;
 
-            // Handle image load error (in case the Pokémon name is invalid)
             img.onerror = function() {
                 spriteContainer.innerHTML = 'Sprite not found. Please check the Pokémon name.';
             };
 
-            // Append the image to the sprite container
             spriteContainer.appendChild(img);
         }
     </script>
