@@ -36,14 +36,15 @@
 
             spriteContainer.innerHTML = '';
 
-            const spriteUrl = `https://img.pokemondb.net/sprites/black-white/normal/${pokemonName}.png`;
+            // URL for Generation 9 sprites
+            const spriteUrl = `https://img.pokemondb.net/sprites/scarlet-violet/normal/${pokemonName}.png`;
 
             const img = document.createElement('img');
             img.src = spriteUrl;
             img.alt = pokemonName;
 
             img.onerror = function() {
-                spriteContainer.innerHTML = 'Sprite not found. Please check the Pokémon name.';
+                spriteContainer.innerHTML = 'Sprite not found. Please check the Pokémon name test.';
             };
 
             spriteContainer.appendChild(img);
@@ -51,3 +52,4 @@
     </script>
 </body>
 </html>
+
