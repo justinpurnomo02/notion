@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pokémon Sprite Viewer</title>
+    <title>Habit Tracker with Pokémon</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -18,55 +18,111 @@
         button {
             padding: 10px 20px;
             font-size: 16px;
+            margin: 5px;
         }
-        #spriteContainer img {
+        #pokemonContainer {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
             margin-top: 20px;
-            max-width: 100px; /* Adjust size if needed */
-            max-height: 100px; /* Adjust size if needed */
+        }
+        .pokemon {
+            text-align: center;
+            margin: 10px;
+        }
+        .xp-bar {
+            width: 100%;
+            background-color: #eee;
+            border: 1px solid #ccc;
+            height: 20px;
+            margin-top: 5px;
+            position: relative;
+        }
+        .xp-bar div {
+            height: 100%;
+            background-color: #4caf50;
+            position: absolute;
+            top: 0;
+            left: 0;
         }
     </style>
 </head>
 <body>
-    <h1>Pokémon Sprite Viewer</h1>
+    <h1>Habit Tracker with Pokémon</h1>
     <div>
-        <input type="text" id="pokemon1" placeholder="Enter Pokémon name">
-        <input type="text" id="pokemon2" placeholder="Enter Pokémon name">
-        <input type="text" id="pokemon3" placeholder="Enter Pokémon name">
+        <input type="text" id="habit1" placeholder="Enter Habit for Pokémon 1">
+        <input type="text" id="habit2" placeholder="Enter Habit for Pokémon 2">
+        <input type="text" id="habit3" placeholder="Enter Habit for Pokémon 3">
     </div>
-    <button onclick="showSprites()">Show Sprites</button>
-    <div id="spriteContainer"></div>
+    <button onclick="updateHabits()">Update Habits</button>
+
+    <div id="pokemonContainer">
+        <div class="pokemon" id="pokemon1-container">
+            <div>Habit: <span id="pokemon1-habit">None</span></div>
+            <img id="pokemon1-img" src="" alt="Pokémon 1">
+            <div>Level: <span id="pokemon1-level">1</span></div>
+            <div class="xp-bar">
+                <div id="pokemon1-xp" style="width: 0%;"></div>
+            </div>
+            <button onclick="trackHabit('pokemon1')">Perform Habit</button>
+        </div>
+        <div class="pokemon" id="pokemon2-container">
+            <div>Habit: <span id="pokemon2-habit">None</span></div>
+            <img id="pokemon2-img" src="" alt="Pokémon 2">
+            <div>Level: <span id="pokemon2-level">1</span></div>
+            <div class="xp-bar">
+                <div id="pokemon2-xp" style="width: 0%;"></div>
+            </div>
+            <button onclick="trackHabit('pokemon2')">Perform Habit</button>
+        </div>
+        <div class="pokemon" id="pokemon3-container">
+            <div>Habit: <span id="pokemon3-habit">None</span></div>
+            <img id="pokemon3-img" src="" alt="Pokémon 3">
+            <div>Level: <span id="pokemon3-level">1</span></div>
+            <div class="xp-bar">
+                <div id="pokemon3-xp" style="width: 0%;"></div>
+            </div>
+            <button onclick="trackHabit('pokemon3')">Perform Habit</button>
+        </div>
+    </div>
 
     <script>
-        function showSprites() {
-            const pokemonNames = [
-                document.getElementById('pokemon1').value.toLowerCase(),
-                document.getElementById('pokemon2').value.toLowerCase(),
-                document.getElementById('pokemon3').value.toLowerCase()
-            ];
-            
-            const spriteContainer = document.getElementById('spriteContainer');
-            spriteContainer.innerHTML = '';
+        // Pokémon data
+        const pokemonData = {
+            pokemon1: { level: 1, xp: 0, xpToLevelUp: 100, habit: '' },
+            pokemon2: { level: 1, xp: 0, xpToLevelUp: 100, habit: '' },
+            pokemon3: { level: 1, xp: 0, xpToLevelUp: 100, habit: '' }
+        };
 
-            pokemonNames.forEach(pokemonName => {
-                if (pokemonName) {
-                    const spriteUrl = `https://img.pokemondb.net/sprites/scarlet-violet/normal/${pokemonName}.png`;
+        // Set Pokémon images
+        document.getElementById('pokemon1-img').src = 'https://img.pokemondb.net/sprites/scarlet-violet/normal/pikachu.png';
+        document.getElementById('pokemon2-img').src = 'https://img.pokemondb.net/sprites/scarlet-violet/normal/charmander.png';
+        document.getElementById('pokemon3-img').src = 'https://img.pokemondb.net/sprites/scarlet-violet/normal/bulbasaur.png';
 
-                    const img = document.createElement('img');
-                    img.src = spriteUrl;
-                    img.alt = pokemonName;
+        function updateHabits() {
+            pokemonData.pokemon1.habit = document.getElementById('habit1').value;
+            pokemonData.pokemon2.habit = document.getElementById('habit2').value;
+            pokemonData.pokemon3.habit = document.getElementById('habit3').value;
 
-                    img.onerror = function() {
-                        this.src = ''; // Clear image source on error
-                        const errorMsg = document.createElement('div');
-                        errorMsg.textContent = `${pokemonName} sprite not found.`;
-                        spriteContainer.appendChild(errorMsg);
-                    };
+            document.getElementById('pokemon1-habit').innerText = pokemonData.pokemon1.habit || 'None';
+            document.getElementById('pokemon2-habit').innerText = pokemonData.pokemon2.habit || 'None';
+            document.getElementById('pokemon3-habit').innerText = pokemonData.pokemon3.habit || 'None';
+        }
 
-                    spriteContainer.appendChild(img);
-                }
-            });
+        function trackHabit(pokemonId) {
+            const pokemon = pokemonData[pokemonId];
+            pokemon.xp += 10; // Gain XP when the habit is performed
+            if (pokemon.xp >= pokemon.xpToLevelUp) {
+                pokemon.level++;
+                pokemon.xp -= pokemon.xpToLevelUp;
+                pokemon.xpToLevelUp += 50; // Increase XP needed for next level
+            }
+
+            // Update UI
+            document.getElementById(`${pokemonId}-level`).innerText = pokemon.level;
+            const xpPercentage = (pokemon.xp / pokemon.xpToLevelUp) * 100;
+            document.getElementById(`${pokemonId}-xp`).style.width = `${xpPercentage}%`;
         }
     </script>
 </body>
 </html>
-
