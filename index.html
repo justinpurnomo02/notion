@@ -13,6 +13,7 @@
         input {
             padding: 10px;
             font-size: 16px;
+            margin: 5px;
         }
         button {
             padding: 10px 20px;
@@ -20,34 +21,50 @@
         }
         #spriteContainer img {
             margin-top: 20px;
+            max-width: 100px; /* Adjust size if needed */
+            max-height: 100px; /* Adjust size if needed */
         }
     </style>
 </head>
 <body>
     <h1>Pokémon Sprite Viewer</h1>
-    <input type="text" id="pokemonName" placeholder="Enter Pokémon name">
-    <button onclick="showSprite()">Show Sprite</button>
+    <div>
+        <input type="text" id="pokemon1" placeholder="Enter Pokémon name">
+        <input type="text" id="pokemon2" placeholder="Enter Pokémon name">
+        <input type="text" id="pokemon3" placeholder="Enter Pokémon name">
+    </div>
+    <button onclick="showSprites()">Show Sprites</button>
     <div id="spriteContainer"></div>
 
     <script>
-        function showSprite() {
-            const pokemonName = document.getElementById('pokemonName').value.toLowerCase();
+        function showSprites() {
+            const pokemonNames = [
+                document.getElementById('pokemon1').value.toLowerCase(),
+                document.getElementById('pokemon2').value.toLowerCase(),
+                document.getElementById('pokemon3').value.toLowerCase()
+            ];
+            
             const spriteContainer = document.getElementById('spriteContainer');
-
             spriteContainer.innerHTML = '';
 
-            // URL for Generation 9 sprites
-            const spriteUrl = `https://img.pokemondb.net/sprites/scarlet-violet/normal/${pokemonName}.png`;
+            pokemonNames.forEach(pokemonName => {
+                if (pokemonName) {
+                    const spriteUrl = `https://img.pokemondb.net/sprites/scarlet-violet/normal/${pokemonName}.png`;
 
-            const img = document.createElement('img');
-            img.src = spriteUrl;
-            img.alt = pokemonName;
+                    const img = document.createElement('img');
+                    img.src = spriteUrl;
+                    img.alt = pokemonName;
 
-            img.onerror = function() {
-                spriteContainer.innerHTML = 'Sprite not found. Please check the Pokémon name test.';
-            };
+                    img.onerror = function() {
+                        this.src = ''; // Clear image source on error
+                        const errorMsg = document.createElement('div');
+                        errorMsg.textContent = `${pokemonName} sprite not found.`;
+                        spriteContainer.appendChild(errorMsg);
+                    };
 
-            spriteContainer.appendChild(img);
+                    spriteContainer.appendChild(img);
+                }
+            });
         }
     </script>
 </body>
